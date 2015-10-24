@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 (function(){
-var app = angular.module('starter', ['ionic']);
+var app = angular.module('mynotes', ['ionic', 'mynotes.notestore']);
 
 app.config(function($stateProvider, $urlRouterProvider){
   $stateProvider.state('list',{
@@ -27,35 +27,11 @@ app.config(function($stateProvider, $urlRouterProvider){
   $urlRouterProvider.otherwise('/list');
 });
 
-var notes = [];
-
-function getNote(noteId){
-  for (var i = 0; i < notes.length; i++){
-    if(notes[i].id === noteId){
-      return notes[i];
-    }
-  }
-  return undefined;
-}
-
-function updateNote(note){
-  for (var i = 0; i < notes.length; i++){
-    if(notes[i].id === note.id){
-      notes[i] = note;  //if the notes are the same, this note is replaced
-      return;
-    }
-  }
-}
-
-function createNote(note){
-  notes.push(note);
-}
-
-app.controller('ListCtrl', function($scope){
-  $scope.notes = notes;
+app.controller('ListCtrl', function($scope, NoteStore){
+  $scope.notes = NoteStore.list();
 });
 
-app.controller('AddCtrl', function($scope, $state){  
+app.controller('AddCtrl', function($scope, $state, NoteStore){  
 
   $scope.note = {
     id: new Date().getTime().toString(),
@@ -64,17 +40,17 @@ app.controller('AddCtrl', function($scope, $state){
   };
 
   $scope.save = function(){
-    createNote($scope.note);
+    NoteStore.create($scope.note);
     $state.go('list'); //we return to the main page
   };
 });
 
-app.controller('EditCtrl', function($scope, $state){  /*$state service allow us to get de param in url*/
+app.controller('EditCtrl', function($scope, $state, NoteStore){  /*$state service allow us to get de param in url*/
 
-  $scope.note = angular.copy(getNote($state.params.noteId)); //provides a note copy in order to get the original copy if user don't save the changes
+  $scope.note = angular.copy(NoteStore.get($state.params.noteId)); //provides a note copy in order to get the original copy if user don't save the changes
 
   $scope.save = function(){
-    updateNote($scope.note);
+    NoteStore.update($scope.note);
     $state.go('list'); //we return to the main page
   };
 });
