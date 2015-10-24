@@ -12,24 +12,22 @@ app.config(function($stateProvider, $urlRouterProvider){
     templateUrl: 'templates/list.html'
   });
 
+  $stateProvider.state('add',{
+    url: '/add',
+    templateUrl: 'templates/edit.html',
+    controller: 'AddCtrl'
+  });
+
   $stateProvider.state('edit',{
     url: '/edit/:noteId',
-    templateUrl: 'templates/edit.html'
+    templateUrl: 'templates/edit.html',
+    controller: 'EditCtrl'
   });
 
   $urlRouterProvider.otherwise('/list');
 });
 
-var notes = [{
-      id:'1',
-      title: 'First note',
-      description: 'This is my first note'
-    },
-    {
-      id:'2',
-      title: 'Second note',
-      description: 'This is my second note'
-    }];
+var notes = [];
 
 function getNote(noteId){
   for (var i = 0; i < notes.length; i++){
@@ -49,8 +47,26 @@ function updateNote(note){
   }
 }
 
+function createNote(note){
+  notes.push(note);
+}
+
 app.controller('ListCtrl', function($scope){
   $scope.notes = notes;
+});
+
+app.controller('AddCtrl', function($scope, $state){  
+
+  $scope.note = {
+    id: new Date().getTime().toString(),
+    title: '',
+    description: ''
+  };
+
+  $scope.save = function(){
+    createNote($scope.note);
+    $state.go('list'); //we return to the main page
+  };
 });
 
 app.controller('EditCtrl', function($scope, $state){  /*$state service allow us to get de param in url*/
