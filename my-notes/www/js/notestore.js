@@ -38,6 +38,12 @@ angular.module('mynotes.notestore',[])
       }
     },
 
+    move: function(note, fromIndex, toIndex){
+      notes.splice(fromIndex,1);
+      notes.splice(toIndex,0, note);
+      persist();
+    },
+
     remove: function(noteId){
        for (var i = 0; i < notes.length; i++){
         if(notes[i].id === noteId){
