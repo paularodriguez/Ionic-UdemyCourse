@@ -1,13 +1,12 @@
 (function(){
 
-var app  = angular.module('app', ['ionic']);
+var app  = angular.module('app', ['ionic', 'ngCordova']);
 
-app.controller('DeviceCtrl', function($scope){
+app.controller('DeviceCtrl', function($scope, $cordovaDevice, $ionicPlatform){
 
-  document.addEventListener('deviceready', function(){
-    console.log('device is ' + angular.toJson(device));
+ $ionicPlatform.ready(function(){
     $scope.$apply(function(){
-      $scope.device = device;
+      $scope.device = $cordovaDevice.getDevice();
     });
   });
 
